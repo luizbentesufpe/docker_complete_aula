@@ -1,0 +1,31 @@
+<section class="list">
+    <h2>Catálogo de Livros</h2>
+  
+    <ul class="list__grid">
+      @for (b of books(); track b.id) {
+        <li>
+          <app-book-card [book]="b"></app-book-card>
+          <button class="btn" (click)="remove(b.id)">Excluir</button>
+          <button class="btn" (click)="edit(b.id)">Editar</button>
+        </li>
+      } @empty {
+        <p class="list__empty">Nenhum livro cadastrado.</p>
+      }
+    </ul>
+  </section>
+  
+
+
+<!-- <section class="list">
+  <h2>Catálogo de Livros</h2>
+
+  <ul class="list__grid" *ngIf="books().length > 0; else emptyList">
+    <li *ngFor="let b of books(); trackBy: trackById">
+      <app-book-card [book]="b"></app-book-card>
+      <button class="btn" (click)="remove(b.id)">Excluir</button>
+    </li>
+  </ul>
+  <ng-template #emptyList>
+    <p class="list__empty">Nenhum livro cadastrado.</p>
+  </ng-template>
+</section> -->

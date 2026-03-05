@@ -1,0 +1,21 @@
+<header class="navbar">
+    <div class="navbar__left">
+      <strong>📚 Biblioteca Angular</strong>
+    </div>
+
+    <div class="navbar__center">
+      <!-- 🔍 COMPONENTE DE BUSCA -->
+      <app-book-search
+        [books]="books()"
+        (filteredChange)="onFilteredChange($event)"
+      />
+    </div>
+    <div class="navbar__right">
+      <a routerLink="/add-book" class="btn">➕ Adicionar Livro</a>
+      <a class="btn btn--outline">Login</a>
+    </div>
+  </header>
+  
+  <main class="container">
+    <app-book-list></app-book-list>
+  </main>

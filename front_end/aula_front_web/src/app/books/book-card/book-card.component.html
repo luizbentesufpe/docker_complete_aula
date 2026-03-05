@@ -1,0 +1,23 @@
+<article class="book-card">
+  <figure class="book-card__media" *ngIf="book.photo; else noPhoto">
+    <img
+      class="book-card__image"
+      *ngIf="book.photo" 
+      [src]="book.photo" 
+      [alt]="'Capa do livro ' + book.title"
+      loading="lazy"
+    />
+  </figure>
+
+  <ng-template #noPhoto>
+    <div class="book-card__media book-card__media--placeholder">
+      <span>Sem imagem</span>
+    </div>
+  </ng-template>
+
+  <div class="book-card__content">
+    <h3 class="book-card__title">{{ book.title }}</h3>
+    <p class="book-card__author">{{ book.author }}</p>
+    <span class="book-card__year">{{ book.year }}</span>
+  </div>
+</article>

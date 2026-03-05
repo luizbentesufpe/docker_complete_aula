@@ -1,0 +1,78 @@
+services:
+  # 1) FRONTEND (Angular + NGINX)
+  frontend:
+    image: ghcr.io/SEU-USUARIO/aula_front_web:latest
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+
+  # 2) BACKEND (Node/Express)
+  backend:
+    image: ghcr.io/SEU-USUARIO/aula_back_end_node:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - DB_HOST=database
+      - DB_USER=postgres
+      - DB_PASS=postgrespwd
+      - DB_NAME=library
+      - MOCK_DATA=false
+      - MINIO_ACTIVE=true
+      - MINIO_ENDPOINT=storage
+      - MINIO_PORT=9000
+      - MINIO_ACCESS_KEY=admin
+      - MINIO_SECRET_KEY=password123
+    # Em produção, prefira:
+    # env_file:
+    #   - ./env/backend.env
+    depends_on:
+      database:
+        condition: service_healthy
+      storage:
+        condition: service_started
+    labels:
+      com.centurylinklabs.watchtower.enable: "true"
+
+  # 3) DATABASE
+  database:
+    image: postgres:15
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespwd
+      - POSTGRES_DB=library
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d library"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+
+  # 4) STORAGE (MinIO)
+  storage:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password123
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+
+  # 5) WATCHTOWER (atualização automática por tag)
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    # --label-enable: só atualiza serviços com label watchtower.enable=true
+    command: --interval 30 --cleanup --label-enable
+    restart: always
+
+volumes:
+  pg_data:
+  minio_data:

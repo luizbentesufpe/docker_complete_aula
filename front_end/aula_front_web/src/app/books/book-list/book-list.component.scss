@@ -1,0 +1,27 @@
+.list {
+    h2 { margin-bottom: .75rem; font-family: Arial, sans-serif; }
+  
+    &__grid {
+      list-style: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+  
+    .btn {
+      margin-top: .5rem;
+      padding: .35rem .75rem;
+      font-size: .8rem;
+      border: 1px solid #d5d9d9;
+      border-radius: 4px;
+      background: #f0f2f2;
+      cursor: pointer;
+    }
+  
+    &__empty {
+      margin-top: 1rem;
+      text-align: center;
+      color: #666;
+    }
+  }

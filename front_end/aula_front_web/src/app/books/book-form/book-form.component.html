@@ -1,0 +1,73 @@
+<div class="form-wrapper">
+  <mat-card class="form-card">
+    <mat-card-title>Cadastro de Livro</mat-card-title>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Título</mat-label>
+        <input matInput formControlName="title" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Autor</mat-label>
+        <input matInput formControlName="author" required />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="full-width">
+        <mat-label>Ano</mat-label>
+        <input matInput type="number" formControlName="year" />
+      </mat-form-field>
+
+      <!-- DROPZONE -->
+      <div class="dropzone" [class.disabled]="uploading" [class.dragover]="isDragOver" (dragover)="onDragOver($event)"
+        (dragleave)="onDragLeave($event)" (drop)="onDrop($event)" (click)="fileInput.click()" role="button" tabindex="0"
+        (keydown.enter)="fileInput.click()" (keydown.space)="fileInput.click()" aria-label="Adicionar foto do livro">
+        <input #fileInput type="file" accept="image/*" hidden (change)="onFileSelected($event)" />
+        <ng-container *ngIf="uploading; else normalContent">
+          <div class="dz-title">Carregando imagem...</div>
+
+          <div class="progress" [class.indeterminate]="progressIndeterminate">
+            <div class="progress__bar" [style.width.%]="progressIndeterminate ? 100 : uploadProgress"></div>
+          </div>
+
+          <div class="dz-hint">
+            <ng-container *ngIf="!progressIndeterminate; else indTpl">
+              {{ uploadProgress }}%
+            </ng-container>
+            <ng-template #indTpl>Processando…</ng-template>
+          </div>
+        </ng-container>
+
+
+        <ng-template #normalContent>
+          <ng-container *ngIf="!photoPreview; else previewTpl">
+            <div class="dz-title">Arraste e solte a foto aqui</div>
+            <div class="dz-subtitle">ou clique para selecionar</div>
+            <div class="dz-hint">PNG/JPG/WebP • até {{ maxPhotoMB }}MB</div>
+          </ng-container>
+
+          <ng-template #previewTpl>
+            <img class="preview" [src]="photoPreview" alt="Prévia da foto do livro" />
+            <div class="preview-actions">
+              <button mat-stroked-button type="button" (click)="fileInput.click(); $event.stopPropagation()">
+                Trocar
+              </button>
+              <button mat-button type="button" color="warn" (click)="clearPhoto(); $event.stopPropagation()">
+                Remover
+              </button>
+            </div>
+          </ng-template>
+        </ng-template>
+      </div>
+
+      <div class="form-actions">
+        <button mat-flat-button color="primary" type="submit" [disabled]="form.invalid">
+          Salvar
+        </button>
+        <button mat-button type="button" (click)="onCancel()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </mat-card>
+</div>

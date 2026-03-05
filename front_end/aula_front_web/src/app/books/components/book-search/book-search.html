@@ -1,0 +1,58 @@
+<div class="gsearch" (keydown)="onKeydown($event)">
+  <div class="gsearch__bar" [class.gsearch__bar--open]="open">
+    <input
+      class="gsearch__input"
+      type="text"
+      [(ngModel)]="searchQuery"
+      (ngModelChange)="onSearchChange($event)"
+      (focus)="onFocus()"
+      placeholder="Buscar livros..."
+      aria-label="Buscar livros"
+    />
+
+    @if (searchQuery.trim()) {
+      <button class="gsearch__iconbtn" type="button" (click)="clear()" aria-label="Limpar">
+        ✕
+      </button>
+    } @else {
+      <span class="gsearch__icon" aria-hidden="true">🔎</span>
+    }
+  </div>
+
+  @if (open) {
+    <div class="gsearch__sheet" role="listbox">
+      @if (!searchQuery.trim()) {
+        <div class="gsearch__hint">Digite para buscar por <strong>título</strong> ou <strong>autor</strong>.</div>
+      }
+
+      @if (searchQuery.trim() && filtered.length === 0) {
+        <div class="gsearch__empty">Nenhum resultado.</div>
+      }
+
+      @for (b of topResults; track b.id) {
+        <button class="gsearch__item" type="button" (click)="onSelect(b)" role="option">
+          <div class="gsearch__line">
+            <span class="gsearch__title">
+              @for (p of highlight(b.title, searchQuery); track $index) {
+                <span [class.hit]="p.match">{{ p.text }}</span>
+              }
+            </span>
+
+            <span class="gsearch__sep">–</span>
+
+            <span class="gsearch__author">
+              @for (p of highlight(b.author, searchQuery); track $index) {
+                <span [class.hit]="p.match">{{ p.text }}</span>
+              }
+            </span>
+          </div>
+          <div class="gsearch__year">{{ b.year }}</div>
+        </button>
+      }
+
+      @if (filtered.length > maxItems) {
+        <div class="gsearch__more">Mostrando {{ maxItems }} de {{ filtered.length }} resultados…</div>
+      }
+    </div>
+  }
+</div>

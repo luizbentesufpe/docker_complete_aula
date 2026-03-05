@@ -1,0 +1,126 @@
+.form-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 16px;
+}
+
+.form-card {
+  width: 100%;
+  max-width: 500px;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+/* =========================
+   DROPZONE – ADAPTADO
+   ========================= */
+
+.dropzone {
+  width: 100%;
+  margin-top: 8px;
+  padding: 16px;
+  border: 2px dashed rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  background-color: #fafafa;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dropzone:hover {
+  border-color: rgba(0, 0, 0, 0.45);
+  background-color: #f0f0f0;
+}
+
+.dropzone.dragover {
+  border-color: #3f51b5;
+  background-color: rgba(63, 81, 181, 0.08);
+}
+
+/* Texto da área */
+.dz-title {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.dz-subtitle {
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.dz-hint {
+  font-size: 12px;
+  opacity: 0.6;
+  margin-top: 4px;
+}
+
+/* =========================
+   PREVIEW DA IMAGEM
+   ========================= */
+
+.preview {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.preview-actions {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* =========================
+   AÇÕES DO FORMULÁRIO
+   ========================= */
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.progress {
+  width: 100%;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin: 12px 0 6px;
+  position: relative;
+}
+
+.progress__bar {
+  height: 100%;
+  width: 0%;
+  background: #3f51b5;
+  border-radius: 999px;
+  transition: width 0.12s ease;
+}
+
+/* fallback indeterminado */
+.progress.indeterminate .progress__bar {
+  width: 40%;
+  position: absolute;
+  left: -40%;
+  animation: indet 1.1s infinite ease-in-out;
+  transition: none;
+}
+
+@keyframes indet {
+  0%   { left: -40%; }
+  100% { left: 110%; }
+}

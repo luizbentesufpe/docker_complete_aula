@@ -1,0 +1,16 @@
+<section class="list">
+    <h2>Catálogo de Livros</h2>
+  
+    <ul class="list__grid">
+      <!-- passa o objeto inteiro via [book] -->
+      <li *ngFor="let b of books; trackBy: trackById">
+        <app-book-card [book]="b"></app-book-card>
+        <!-- botão opcional para demonstrar ação -->
+        <button class="btn" (click)="remove(b.id)">Excluir</button>
+      </li>
+    </ul>
+  
+    <p *ngIf="!books.length" class="list__empty">
+      Nenhum livro cadastrado.
+    </p>
+  </section>

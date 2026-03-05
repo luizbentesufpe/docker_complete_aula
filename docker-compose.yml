@@ -1,0 +1,93 @@
+services:
+  # 1. Frontend: Angular (servido por Nginx na porta 80 do container)
+  frontend:
+    build: ./front_end/aula_front_web
+    container_name: frontend
+    ports:
+      - "4200:80"         # Acesse em http://localhost:4200
+    depends_on:
+      - backend
+    networks:
+      - appnet
+    restart: unless-stopped
+
+  # 2. Backend: Node.js/Express (porta 3000)
+  backend:
+    build: ./back_end/aula_back_end_node
+    container_name: backend
+    ports:
+      - "3000:3000"       # opcional para acessar a API direto do host
+    expose:
+      - "3000"            # visível na rede interna para o frontend (Nginx proxy)
+    env_file:
+      - ./.env/backend.env # certifique-se que PGHOST=database ou DATABASE_URL usa host=database
+    depends_on:
+      database:
+        condition: service_healthy
+      storage:
+        condition: service_started
+    networks:
+      - appnet
+    restart: unless-stopped
+
+  # 3. Banco de Dados: PostgreSQL
+  database:
+    image: postgres:15
+    container_name: database
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgrespwd
+      - POSTGRES_DB=library
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    expose:
+      - "5432"
+    healthcheck:
+      # Importante: usar 127.0.0.1 aqui para não depender de DNS dentro do container
+      test: ["CMD-SHELL", "pg_isready -U postgres -d library -h 127.0.0.1 -p 5432"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    networks:
+      - appnet
+    restart: unless-stopped
+
+  # 4. Servidor de Arquivos: MinIO
+  storage:
+    image: minio/minio
+    container_name: storage
+    ports:
+      - "9000:9000"       # API
+      - "9001:9001"       # Console
+    environment:
+      - MINIO_ROOT_USER=admin
+      - MINIO_ROOT_PASSWORD=password123
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - appnet
+    restart: unless-stopped
+    # (Opcional) healthcheck simples
+    # healthcheck:
+    #   test: ["CMD", "curl", "-f", "http://127.0.0.1:9000/minio/health/ready"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 12
+
+  # 5. Watchtower (atualizado)
+  watchtower:
+        image: containrrr/watchtower
+        volumes:
+          - /var/run/docker.sock:/var/run/docker.sock
+        command: --interval 30 --cleanup # Verifica atualizações a cada 30 segundos e remove imagens antigas
+        restart: always
+
+
+volumes:
+  pg_data:
+  minio_data:
+
+networks:
+  appnet:
+    driver: bridge
